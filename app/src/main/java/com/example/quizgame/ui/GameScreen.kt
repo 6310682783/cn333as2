@@ -1,150 +1,130 @@
-package com.example.quizgame.ui.theme
+package com.example.quizgame.ui
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.R
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.quizgame.data.Question
 
+
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun GameScreen(
-    modifier: Modifier = Modifier,
-    /*gameView: GameViewModel = viewModel()*/
-) {
-    val gameUiState by gameViewModel.uiState.collectAsState()
-    Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        GameStatus(
-            countQuestion = gameUiState.countQuestion,
-            score = gameUiState.score
-        )
-        GameLayout(
-            /*onUserGuessChanged = { gameViewModel.updateUserGuess(it) },
-            userGuess = gameViewModel.userGuess,
-            onKeyboardDone = { gameViewModel.checkUserGuess() },*/
-            currentQuestion = gameUiState.currentQuestion,
-            isChoiceTrue = gameUiState.isChoiceTrue,
-            userAns = gameUiState.userAns
-        )
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Button(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(start = 8.dp),
-                onClick = { gameViewModel.checkUserGuess() }
-            ) {
-                Text(stringResource(R.string.next))
-            }
-        }
-        if (gameUiState.isGameOver) {
-            FinalScoreDialog(
-                score = gameUiState.score,
-                onPlayAgain = { gameViewModel.resetGame() }
+fun QuizScreen(gameViewModel: GameViewModel, onPlayAgain: () -> Unit, onExit: () -> Unit) {
+
+    val uiState by gameViewModel.uiState.collectAsState()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Quiz App") }
             )
-        }
-    }
-}
-
-
-@Composable
-fun Gamestatus(questionCount: Int, score: Int, modifier: Modifier = Modifier){
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .size(48.dp),
-    ) {
-        Text(
-            text = stringResource(R.string.question_count, questionCount),
-            fontSize = 18.sp,
-        )
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth(Alignment.End),
-            text = stringResource(R.string.score, score),
-            fontSize = 18.sp,
-        )
-    }
-}
-@Composable
-fun GameLayout(
-    currentQuestion: String,
-    isChoiceTrue: Boolean,
-    userAns: String,
-    modifier: Modifier = Modifier
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(24.dp), modifier = modifier.padding(16.dp)
-    ) {
-        Text(
-            text = currentQuestion,
-            fontSize = 45.sp,
-            modifier = modifier.align(Alignment.CenterHorizontally)
-            
-        )
-        TextButton(onClick = { /*TODO*/ }) {
-            Text(text = "a")
-        }
-        TextButton(onClick = { /*TODO*/ }) {
-            Text(text = "b")
-        }
-        TextButton(onClick = { /*TODO*/ }) {
-            Text(text = "c")
-        }
-        TextButton(onClick = { /*TODO*/ }) {
-            Text(text = "d")
-        }
-    }
-}
-
-@Composable
-fun FinalScoreDialog(
-    score: Int,
-    onPlayAgain: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val activity = (LocalContext.current as Activity)
-
-    AlertDialog(
-        onDismissRequest = {
-            // Dismiss the dialog when the user clicks outside the dialog or on the back
-            // button. If you want to disable that functionality, simply use an empty
-            // onCloseRequest.
         },
-        title = { Text(stringResource(R.string.congratulations)) },
-        text = { Text(stringResource(R.string.you_scored, score)) },
-        modifier = modifier,
-        dismissButton = {
-            TextButton(
-                onClick = {
-                    activity.finish()
-                }
+        content = {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(16.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(text = stringResource(R.string.exit))
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onPlayAgain) {
-                Text(text = stringResource(R.string.play_again))
+                when {
+                    uiState.currentQuestion.question.isEmpty() -> {
+                        SummaryScreen(
+                            score = uiState.score,
+                            onPlayAgain = onPlayAgain,
+                            onExit = onExit
+                        )
+                    }
+                    else -> {
+                        QuestionScreen(
+                            question = uiState.currentQuestion,
+                            choices = uiState.choices,
+                            score = uiState.score,
+                            quizNum = uiState.quizNumber,
+                            onAnswerSelected = gameViewModel::answerQuestion
+                        )
+                    }
+                }
             }
         }
     )
+}
+
+@Composable
+fun QuestionScreen(question: Question, choices: List<String>, score: Int, quizNum: Int, onAnswerSelected: (String) -> Unit) {
+
+    Column(
+        modifier = Modifier.padding(16.dp)
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+                .size(48.dp),
+        ) {
+            Text(text = "$quizNum/10")
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.End),
+                text = "score: $score")
+        }
+        Spacer(modifier = Modifier.height(50.dp))
+        Text(text = question.question)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        choices.forEach { choice ->
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                onClick = { onAnswerSelected(choice) }
+            ) {
+                Text(text = choice)
+            }
+        }
+    }
+}
+
+@Composable
+fun SummaryScreen(score: Int, onPlayAgain: () -> Unit, onExit: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Your score is $score out of 10",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onPlayAgain,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Play Again")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = onExit,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Exit")
+        }
+    }
 }

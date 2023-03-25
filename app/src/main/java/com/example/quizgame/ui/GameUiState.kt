@@ -1,11 +1,10 @@
 package com.example.quizgame.ui
 
+import com.example.quizgame.data.Question
+
 data class GameUiState(
-    val currentQuestion: String = "",
-    val countQuestion: Int = 1,
-    val score: Int = 0,
-    val correctAns: String = "",
-    val userAns: String = "",
-    val isGameOver: Boolean = false,
-    val isChoiceTrue: Boolean = true,
+    val currentQuestion: Question,
+    val choices: List<String>,
+    val score: Int,
+    val quizNumber: Int
 )
