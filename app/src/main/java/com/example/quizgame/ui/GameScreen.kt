@@ -29,10 +29,10 @@ fun QuizScreen(gameViewModel: GameViewModel, onPlayAgain: () -> Unit, onExit: ()
         content = {
             Box(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
-                contentAlignment = Alignment.Center
+
             ) {
-                when {
-                    uiState.currentQuestion.question.isEmpty() -> {
+                when (uiState.quizNumber) {
+                    10 -> {
                         SummaryScreen(
                             score = uiState.score,
                             onPlayAgain = onPlayAgain,
@@ -45,7 +45,8 @@ fun QuizScreen(gameViewModel: GameViewModel, onPlayAgain: () -> Unit, onExit: ()
                             choices = uiState.choices,
                             score = uiState.score,
                             quizNum = uiState.quizNumber,
-                            onAnswerSelected = gameViewModel::answerQuestion
+                            answer = uiState.currentQuestion.answer,
+                            SelectedAnswer = gameViewModel::answerQuestion
                         )
                     }
                 }
@@ -55,20 +56,20 @@ fun QuizScreen(gameViewModel: GameViewModel, onPlayAgain: () -> Unit, onExit: ()
 }
 
 @Composable
-fun QuestionScreen(question: Question, choices: List<String>, score: Int, quizNum: Int, onAnswerSelected: (String) -> Unit) {
+fun QuestionScreen(question: Question, choices: List<String>, score: Int, quizNum: Int, answer: String, SelectedAnswer: (String) -> Unit) {
 
     Column(
         modifier = Modifier.padding(16.dp)
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-                .size(48.dp),
+                .padding(top = 16.dp),
+            horizontalArrangement = Arrangement.SpaceAround
         ) {
             Text(text = "$quizNum/10")
             Text(
@@ -87,7 +88,7 @@ fun QuestionScreen(question: Question, choices: List<String>, score: Int, quizNu
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
-                onClick = { onAnswerSelected(choice) }
+                onClick = { SelectedAnswer(choice) }
             ) {
                 Text(text = choice)
             }

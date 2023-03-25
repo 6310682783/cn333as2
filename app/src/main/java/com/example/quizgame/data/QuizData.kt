@@ -58,6 +58,26 @@ class QuizData {
             question = "What is the largest country in South America by land area?",
             answer = "Brazil",
             choices = listOf("Brazil", "Argentina", "Colombia", "Peru")
+        ),
+        Question(
+            question = "Who plays the role of Loki in the Marvel Cinematic Universe?",
+            answer = "Tom Hiddleston",
+            choices = listOf("Tom Hardy", "Tom Hiddleston", "Chris Hemsworth", "Robert Downey Jr.")
+        ),
+        Question(
+            question = "In which year did Christopher Columbus first arrive in the Americas?",
+            answer = "1492",
+            choices = listOf("1492", "1592", "1692", "1792")
+        ),
+        Question(
+            question = "What is the national animal of Thailand?",
+            answer = "Elephant",
+            choices = listOf("Elephant", "Tiger", "Dog", "Lion")
+        ),
+        Question(
+            question = "Who is Loki in Norse mythology?",
+            answer = "The god of mischief",
+            choices = listOf("The god of thunder", "The god of love", "The god of mischief", "The god of wisdom")
         )
     )
 }
