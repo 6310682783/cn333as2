@@ -2,6 +2,8 @@
 <resources>
 
     <style name="Theme.QuizGame" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@color/brown_300</item>
+        <item name="android:background">@color/brown_200</item>
     </style>
+
 </resources>

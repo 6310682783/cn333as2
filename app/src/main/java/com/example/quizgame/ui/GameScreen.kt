@@ -10,7 +10,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.quizgame.data.Question
 
 
@@ -79,7 +81,8 @@ fun QuestionScreen(question: Question, choices: List<String>, score: Int, quizNu
                 text = "score: $score")
         }
         Spacer(modifier = Modifier.height(50.dp))
-        Text(text = question.question)
+        Text(text = question.question,
+            fontSize = 20.sp)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -88,9 +91,13 @@ fun QuestionScreen(question: Question, choices: List<String>, score: Int, quizNu
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp),
-                onClick = { SelectedAnswer(choice) }
+
+
+                onClick = { SelectedAnswer(choice) },
+
             ) {
-                Text(text = choice)
+                Text(text = choice,
+                fontSize = 18.sp)
             }
         }
     }
@@ -107,6 +114,7 @@ fun SummaryScreen(score: Int, onPlayAgain: () -> Unit, onExit: () -> Unit) {
     ) {
         Text(
             text = "Your score is $score out of 10",
+            fontSize = 20.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
@@ -116,7 +124,8 @@ fun SummaryScreen(score: Int, onPlayAgain: () -> Unit, onExit: () -> Unit) {
             onClick = onPlayAgain,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Play Again")
+            Text(text = "Play Again",
+                fontSize = 16.sp)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -125,7 +134,8 @@ fun SummaryScreen(score: Int, onPlayAgain: () -> Unit, onExit: () -> Unit) {
             onClick = onExit,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Exit")
+            Text(text = "Exit",
+                fontSize = 16.sp)
         }
     }
 }
